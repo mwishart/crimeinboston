@@ -17,8 +17,8 @@ Goal: Want to predict location of crimes
 6) Do final report 
 
 Variables: 
-Label: district 
-offense_code_group
-day of week 
-hour 
-Combine: year & month 
+-Label: district 
+-offense_code_group
+-day of week 
+-hour 
+-Combine: year & month 
