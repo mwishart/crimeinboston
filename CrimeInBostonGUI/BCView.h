@@ -15,6 +15,13 @@ public:
     explicit BCView(QWidget *parent = nullptr);
     ~BCView();
 
+    struct SelectedPoint
+    {
+        DistrictEnum dis;
+        int index;
+    };
+
+    bool findClosestPointToPixel(SelectedPoint* sp, const QPoint &pixel, int max_range) const;
     int loadCrimeCSV(const QString &csv);
 
 protected:
@@ -28,6 +35,7 @@ protected:
 
     void resizeGL(int width, int height);
     void paintGL();
+    void drawUI();
 
 signals:
 
@@ -40,6 +48,7 @@ private:
     District** m_districts;
     QPoint m_pan_point;
     bool m_panning;
+    SelectedPoint m_selected_point;
 };
 
 #endif // BCVIEW_H

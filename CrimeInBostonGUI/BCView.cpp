@@ -26,6 +26,7 @@ BCView::BCView(QWidget *parent) : QOpenGLWidget(parent)
     m_panning = false;
     m_pan_point = QPoint();
     m_camera = new Camera2D();
+    m_selected_point.dis = District_Invalid;
 }
 BCView::~BCView()
 {
@@ -33,6 +34,49 @@ BCView::~BCView()
         delete m_districts[i];
     delete[] m_districts;
     delete m_camera;
+}
+
+bool BCView::findClosestPointToPixel(SelectedPoint* sp, const QPoint &pixel, int max_range) const
+{
+    bool found = false;
+    const int sw = width(), sh = height();
+    const QRect viewport = rect();
+    int closest_distance = (max_range * max_range), distance, count, i, j;
+    const QMatrix4x4 view_matrix = m_camera->getViewMatrix();
+    QPoint crime_pixel;
+    for (i = 0; i < District_Total; i++)
+    {
+        CrimeCollection* cc = m_districts[i]->crimeCollection();
+        count = cc->crimeCount();
+        for (j = 0; j < count; j++)
+        {
+            crime_pixel = Utilities3D::sceneXYZtoPixel(QVector3D(cc->crimeXYZAt(j)), view_matrix, m_projection_2d, sw, sh);
+            if (viewport.contains(crime_pixel))
+            {
+                distance = Utilities2D::euclideanDistanceSquaredI(pixel, crime_pixel);
+                if (distance < closest_distance)
+                {
+                    found = true;
+                    closest_distance = distance;
+                    sp->dis = static_cast<DistrictEnum>(i);
+                    sp->index = j;
+                    if (closest_distance == 0) //if it is zero we are done
+                    {
+                        i = District_Total;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    if (!found)
+    {
+        sp->dis = District_Invalid;
+        sp->index = -1;
+    }
+
+    return found;
 }
 
 int BCView::loadCrimeCSV(const QString &csv)
@@ -109,6 +153,11 @@ void BCView::mouseReleaseEvent(QMouseEvent* ev)
         m_panning = false;
     if (ev->button() == Qt::RightButton)
     {
+        findClosestPointToPixel(&m_selected_point, ev->pos(), 16);
+        update();
+    }
+    else if (ev->button() == Qt::MiddleButton)
+    {
         m_camera->setPosition(magic_x, magic_y);
         update();
     }
@@ -135,6 +184,8 @@ void BCView::mouseMoveEvent(QMouseEvent* ev)
         delta_y = static_cast<float>(mp.y() - m_pan_point.y()) / m_camera_scale;
         m_camera->move(delta_x, delta_y);
         m_pan_point = mp;
+        Utilities3D::sceneXYZtoPixel(QVector3D(magic_x, magic_y, 0.0f), m_camera->getViewMatrix(), m_projection_2d, width(), height());
+
         update();
     }
     ev->accept();
@@ -221,15 +272,34 @@ void BCView::paintGL()
 
 
 
+    f->glPointSize(4.0f);
     f->glBegin(GL_POINTS);
-    f->glPointSize(16.0f);
     f->glColor3ub(100, 255, 100);
     f->glVertex2f(magic_x, magic_y);
     f->glEnd();
 
-    //QPainter painter(this);
+    drawUI();
+}
 
-    //painter.drawImage(rect(), m_image);
+void BCView::drawUI()
+{
+    QPainter painter(this);
 
-    //painter.end();
+    if (m_selected_point.dis != District_Invalid && m_selected_point.index >= 0)
+    {
+        QPen pen;
+        QBrush brush;
+        QVector3D sp = m_districts[m_selected_point.dis]->crimeCollection()->crimeXYZAt(m_selected_point.index);
+        QPoint pixel = Utilities3D::sceneXYZtoPixel(sp, m_camera->getViewMatrix(), m_projection_2d, width(), height());
+
+        pen.setWidth(2);
+        pen.setColor(QColor(255, 255, 255));
+        brush.setStyle(Qt::NoBrush);
+
+        painter.setPen(pen);
+        painter.setBrush(brush);
+        painter.drawEllipse(pixel, 8, 8);
+    }
+
+    painter.end();
 }

@@ -37,6 +37,10 @@ float Camera2D::getScale() const
 {
     return m_scale;
 }
+QMatrix4x4 Camera2D::getViewMatrix() const
+{
+    return m_view;
+}
 
 QPointF Camera2D::mapPixelToScene(const QPoint &pixel) const
 {

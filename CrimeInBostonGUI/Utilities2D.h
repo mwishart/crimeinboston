@@ -18,6 +18,7 @@ public:
     static GLuint wire_sphere(const int number_of_points, GLfloat radius);
     static GLuint wire_cylinder(const int number_of_points, GLfloat radius, GLfloat height);
     static GLuint wire_cone(const int number_of_points, GLfloat radius, GLfloat height);
+    static int euclideanDistanceSquaredI(const QPoint &a, const QPoint &b);
     static int maxInt(int a, int b);
     static void delList(GLuint* lst);
 

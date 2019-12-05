@@ -17,6 +17,11 @@ const CrimeNode &CrimeCollection::crimeAt(int idx) const
 {
     return m_crimes.at(idx);
 }
+QVector3D CrimeCollection::crimeXYZAt(int idx) const
+{
+    const CrimeNode &cn = m_crimes.at(idx);
+    return QVector3D(cn.x, cn.y, 0.0f);
+}
 
 void CrimeCollection::pushCrime(float x, float y, qint64 file_position, unsigned char prediction)
 {

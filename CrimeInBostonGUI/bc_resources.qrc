@@ -3,5 +3,11 @@
         <file>images/boston_police_districts_f55.png</file>
         <file>districts/E18.txt</file>
         <file>districts/E5.txt</file>
+        <file>districts/B3.txt</file>
+        <file>districts/C11.txt</file>
+        <file>districts/E13.txt</file>
+        <file>districts/B2.txt</file>
+        <file>districts/D4.txt</file>
+        <file>districts/D14.txt</file>
     </qresource>
 </RCC>

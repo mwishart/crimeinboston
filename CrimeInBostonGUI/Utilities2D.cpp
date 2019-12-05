@@ -255,6 +255,14 @@ GLuint Utilities2D::wire_cone(const int number_of_points, GLfloat radius, GLfloa
     return cone;
 }
 
+int Utilities2D::euclideanDistanceSquaredI(const QPoint &a, const QPoint &b)
+{
+    int dx, dy;
+    dx = b.x() - a.x();
+    dy = b.y() - a.y();
+    return (dx * dx) + (dy * dy);
+}
+
 int Utilities2D::maxInt(int a, int b)
 {
     int c = b;

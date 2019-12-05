@@ -14,6 +14,7 @@ public:
     float getX() const;
     float getY() const;
     float getScale() const;
+    QMatrix4x4 getViewMatrix() const;
     QPointF mapPixelToScene(const QPoint &pixel) const;
 
     //setters

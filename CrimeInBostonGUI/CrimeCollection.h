@@ -2,6 +2,7 @@
 #define CRIMECOLLECTION_H
 
 #include <QIODevice>
+#include <QVector3D>
 
 struct CrimeNode
 {
@@ -19,6 +20,7 @@ public:
 
     int crimeCount() const;
     const CrimeNode& crimeAt(int idx) const;
+    QVector3D crimeXYZAt(int idx) const;
 
     void pushCrime(float x, float y, qint64 file_position, unsigned char prediction);
     void clearCrimes();
