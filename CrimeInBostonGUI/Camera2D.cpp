@@ -15,8 +15,9 @@ Camera2D::~Camera2D()
 void Camera2D::updateViewMatrix()
 {
     m_view.setToIdentity();
-    m_view.translate(-m_x, -m_y, 0.0f); //view matricies are always opposite signs relative to the scene coordinate system
+    //m_view.translate(-m_x, -m_y, 0.0f); //view matricies are always opposite signs relative to the scene coordinate system
     m_view.scale(m_scale, m_scale);
+    m_view.translate(-m_x, -m_y, 0.0f);
 }
 
 //accessors

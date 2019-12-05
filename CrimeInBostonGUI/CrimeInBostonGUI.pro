@@ -32,7 +32,8 @@ SOURCES += \
     Camera2D.cpp \
     Utilities2D.cpp \
     Utilities3D.cpp \
-    District.cpp
+    District.cpp \
+    CrimeCollection.cpp
 
 HEADERS += \
         MainWindow.h \
@@ -41,7 +42,8 @@ HEADERS += \
     Camera2D.h \
     Utilities2D.h \
     Utilities3D.h \
-    District.h
+    District.h \
+    CrimeCollection.h
 
 FORMS += \
         MainWindow.ui

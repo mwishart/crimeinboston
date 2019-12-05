@@ -4,6 +4,8 @@
 #include <QString>
 #include <QList>
 
+class CrimeCollection;
+
 enum DistrictEnum
 {
     District_Invalid = -1,
@@ -19,6 +21,7 @@ public:
     District(DistrictEnum district_num);
     ~District();
 
+    CrimeCollection* crimeCollection();
     int loadData(const QString &d_filepath);
 
     struct LL
@@ -29,13 +32,15 @@ public:
         float y;
     };
 
-    void drawDistrict();
+    void drawDistrictBorder();
+    void drawCrimeData();
 
     static DistrictEnum idToEnum(const QString &name);
     static QString enumToId(DistrictEnum d_id);
 
 private:
     QList<LL> m_positions;
+    CrimeCollection* m_crimes;
     QString m_id;
     QString m_name;
 

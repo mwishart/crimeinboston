@@ -17,6 +17,7 @@ public:
 
 private slots:
     void aboutSlot();
+    void openSlot();
 
 private:
     Ui::MainWindow *ui;

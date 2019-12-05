@@ -1,5 +1,6 @@
 #include "District.h"
 #include "Utilities2D.h"
+#include "CrimeCollection.h"
 #include "Camera2D.h"
 #include <QFile>
 #include <iostream>
@@ -12,6 +13,7 @@ District::District(const QString &d_filepath)
 {
     m_id = QString();
     m_name = QString("Unamed District");
+    m_crimes = new CrimeCollection();
     loadData(d_filepath);
 }
 District::District(DistrictEnum district_num)
@@ -19,16 +21,20 @@ District::District(DistrictEnum district_num)
     QString filename(":/districts/");
     m_id = QString();
     m_name = QString("Unamed District");
+    m_crimes = new CrimeCollection();
     filename.append(enumToId(district_num));
     filename.append(".txt");
     loadData(filename);
 }
-
 District::~District()
 {
-
+    delete m_crimes;
 }
 
+CrimeCollection *District::crimeCollection()
+{
+    return m_crimes;
+}
 int District::loadData(const QString &d_filepath)
 {
     int rc = 0, line = 1;
@@ -76,7 +82,28 @@ int District::loadData(const QString &d_filepath)
     return rc;
 }
 
-void District::drawDistrict()
+void District::drawCrimeData()
+{
+    QOpenGLFunctions_3_0* f = Utilities2D::getGLFunctions30();
+    if (f != nullptr && m_crimes != nullptr)
+    {
+        GLubyte r, g, b;
+        int c_count = m_crimes->crimeCount();
+        r = 255;
+        g = 255;
+        b = 255;
+        f->glBegin(GL_POINTS);
+        f->glColor3ub(r, g, b);
+        for (int i = 0; i < c_count; i++)
+        {
+            const CrimeNode& cn = m_crimes->crimeAt(i);
+            f->glVertex2f(cn.x, cn.y);
+        }
+        f->glEnd();
+    }
+}
+
+void District::drawDistrictBorder()
 {
     QOpenGLFunctions_3_0* f = Utilities2D::getGLFunctions30();
     int size = m_positions.size();

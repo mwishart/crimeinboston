@@ -15,6 +15,8 @@ public:
     explicit BCView(QWidget *parent = nullptr);
     ~BCView();
 
+    int loadCrimeCSV(const QString &csv);
+
 protected:
     void initializeGL();
 
