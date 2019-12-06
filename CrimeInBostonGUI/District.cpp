@@ -9,6 +9,10 @@ using namespace std;
 const double District::ORIGIN_LON = -72.0;
 const double District::ORIGIN_LAT = 42.0;
 
+const GLubyte red_array[4]   = {255, 255, 255, 25};
+const GLubyte green_array[4] = {255, 100, 255, 255};
+const GLubyte blue_array[4]  = {255, 100,  50,  25};
+
 District::District(const QString &d_filepath)
 {
     m_id = QString();
@@ -97,6 +101,7 @@ void District::drawCrimeData()
         for (int i = 0; i < c_count; i++)
         {
             const CrimeNode& cn = m_crimes->crimeAt(i);
+            f->glColor3ub(red_array[cn.ucr_part], green_array[cn.ucr_part], blue_array[cn.ucr_part]);
             f->glVertex2f(cn.x, cn.y);
         }
         f->glEnd();

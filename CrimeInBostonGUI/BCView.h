@@ -7,6 +7,7 @@
 #include "District.h"
 
 class Camera2D;
+struct CrimeNodeData;
 
 class BCView : public QOpenGLWidget
 {
@@ -49,6 +50,8 @@ private:
     QPoint m_pan_point;
     bool m_panning;
     SelectedPoint m_selected_point;
+    CrimeNodeData* m_details;
+    QString m_csv;
 };
 
 #endif // BCVIEW_H

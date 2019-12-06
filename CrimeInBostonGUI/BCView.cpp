@@ -27,6 +27,7 @@ BCView::BCView(QWidget *parent) : QOpenGLWidget(parent)
     m_pan_point = QPoint();
     m_camera = new Camera2D();
     m_selected_point.dis = District_Invalid;
+    m_details = new CrimeNodeData();
 }
 BCView::~BCView()
 {
@@ -34,6 +35,7 @@ BCView::~BCView()
         delete m_districts[i];
     delete[] m_districts;
     delete m_camera;
+    delete m_details;
 }
 
 bool BCView::findClosestPointToPixel(SelectedPoint* sp, const QPoint &pixel, int max_range) const
@@ -43,10 +45,14 @@ bool BCView::findClosestPointToPixel(SelectedPoint* sp, const QPoint &pixel, int
     const QRect viewport = rect();
     int closest_distance = (max_range * max_range), distance, count, i, j;
     const QMatrix4x4 view_matrix = m_camera->getViewMatrix();
+    QPolygon poly;
     QPoint crime_pixel;
     for (i = 0; i < District_Total; i++)
     {
         CrimeCollection* cc = m_districts[i]->crimeCollection();
+        poly = Utilities3D::scenePolyToPixelPoly(cc->getBounds(), view_matrix, m_projection_2d, sw, sh);
+        if (!poly.containsPoint(pixel, Qt::OddEvenFill)) //skip regions that dont have the pixel
+            continue;
         count = cc->crimeCount();
         for (j = 0; j < count; j++)
         {
@@ -91,13 +97,16 @@ int BCView::loadCrimeCSV(const QString &csv)
     float x, y;
     if (load_ok)
     {
+        qint64 fp;
         //clear old crimes from districts
         for (int i = 0; i < District_Total; i++)
             m_districts[i]->crimeCollection()->clearCrimes();
+        m_csv = csv;
 
         QString line = file.readLine(); //header
         while (!file.atEnd())
         {
+            fp = file.pos();
             line = file.readLine();
             list = line.split(',');
             if (list.size() >= 17)
@@ -106,14 +115,25 @@ int BCView::loadCrimeCSV(const QString &csv)
                 di = District::idToEnum(id);
                 if (di != District_Invalid)
                 {
+                    unsigned char ucr_part = 0u;
                     const QString& latstr = list.at(14);
                     const QString& lonstr = list.at(15);
+                    const QString ucr_str = list.at(12);
+                    if (ucr_str.size() > 6)
+                    {
+                        switch(ucr_str[6].toLatin1())
+                        {
+                            case 'n': ucr_part = 1u; break;
+                            case 'h': ucr_part = 2u; break;
+                            case 'w': ucr_part = 3u; break;
+                        }
+                    }
                     lat = latstr.toDouble();
                     lon = lonstr.toDouble();
                     x = static_cast<float>(lon - District::ORIGIN_LON);
                     y = 1.0f - static_cast<float>(lat - District::ORIGIN_LAT);
                     cc = m_districts[di]->crimeCollection();
-                    cc->pushCrime(x, y, file.pos(), 0);
+                    cc->pushCrime(x, y, fp, 0, ucr_part);
                 }
             }
         }
@@ -154,6 +174,12 @@ void BCView::mouseReleaseEvent(QMouseEvent* ev)
     if (ev->button() == Qt::RightButton)
     {
         findClosestPointToPixel(&m_selected_point, ev->pos(), 16);
+        if (m_selected_point.dis != District_Invalid && m_selected_point.index >= 0)
+        {
+        qint64 fp = m_districts[m_selected_point.dis]->crimeCollection()->crimeAt(m_selected_point.index).file_offset;
+        if (fp > 0u)
+            m_details->readFromFile(m_csv, fp);
+        }
         update();
     }
     else if (ev->button() == Qt::MiddleButton)
@@ -270,8 +296,6 @@ void BCView::paintGL()
             d->drawCrimeData();
     }
 
-
-
     f->glPointSize(4.0f);
     f->glBegin(GL_POINTS);
     f->glColor3ub(100, 255, 100);
@@ -287,10 +311,13 @@ void BCView::drawUI()
 
     if (m_selected_point.dis != District_Invalid && m_selected_point.index >= 0)
     {
+        QString datestr;
         QPen pen;
         QBrush brush;
         QVector3D sp = m_districts[m_selected_point.dis]->crimeCollection()->crimeXYZAt(m_selected_point.index);
         QPoint pixel = Utilities3D::sceneXYZtoPixel(sp, m_camera->getViewMatrix(), m_projection_2d, width(), height());
+        QRect textpos;
+        int incr = 20;
 
         pen.setWidth(2);
         pen.setColor(QColor(255, 255, 255));
@@ -299,6 +326,37 @@ void BCView::drawUI()
         painter.setPen(pen);
         painter.setBrush(brush);
         painter.drawEllipse(pixel, 8, 8);
+
+        //draw details
+        brush.setColor(QColor(0, 0, 0, 150));
+        brush.setStyle(Qt::SolidPattern);
+        pen.setColor(QColor(255, 255, 255));
+        pen.setStyle(Qt::SolidLine);
+        pen.setWidth(1);
+        painter.setPen(pen);
+        painter.setBrush(brush);
+        painter.setFont(QFont("Verdana", 12));
+
+        painter.drawRect(QRect(2, 2, 128, 8 * incr + 2));
+        textpos = QRect(5, 5, 512, incr);
+
+        painter.drawText(textpos, m_details->incident_number); textpos.translate(0, incr);
+        painter.drawText(textpos, QString::number(m_details->lat, 'f', 2) + QString(", ") + QString::number(m_details->lon, 'f', 2)); textpos.translate(0, incr);
+        painter.drawText(textpos, m_details->offence_code_group); textpos.translate(0, incr);
+        painter.drawText(textpos, m_details->offence_description); textpos.translate(0, incr);
+        painter.drawText(textpos, QString("District ") + m_details->district); textpos.translate(0, incr);
+        painter.drawText(textpos, m_details->street); textpos.translate(0, incr);
+        painter.drawText(textpos, m_details->day_of_the_week); textpos.translate(0, incr);
+
+        datestr = QString::number(m_details->month);
+        datestr.push_back('/');
+        datestr.append(QString::number(m_details->year));
+        datestr.push_back(' ');
+        if (m_details->hour > 12)
+            datestr.append(QString::number(m_details->hour - 12) + "pm");
+        else
+            datestr.append(QString::number(m_details->hour) + "am");
+        painter.drawText(textpos, datestr);
     }
 
     painter.end();
