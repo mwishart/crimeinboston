@@ -19,6 +19,7 @@
 %----------------------------------------------------------------------------------------
 
 \documentclass[a0,landscape]{a0poster}
+\usepackage{cite}
 
 
 
@@ -212,7 +213,7 @@ u}}
 
 \begin{minipage}[b]{1.5\linewidth}
 \begin{vwcol}[widths={0.35,0.65},sep=.8cm, justify=flush,rule=0pt,indent=1em]
-\Huge \color{Blue} \textbf{A Look into Crime in Boston} \color{Black}\\ % Title
+\Huge \color{Blue} \textbf{Predicting Crime in Boston} \color{Black}\\ % Title
 %\Huge\textit{An Exploration of Complexity}\\[1cm] % Subtitle
 \huge \color{Black}\textbf{Julie Osborne, Chris McCooey, Mary Wishart}    
 \vfill\null
@@ -249,7 +250,7 @@ u}}
 
 %\color{Navy} % Navy color for the abstract
 \section*{Abstract}
-Boston is the largest city in New England. Being a major metropolitan area means that crimes occur around the city every day. Our project takes a look into the "Crimes in Boston". From the information in these data, we used machine learning techniques to see if given a specific crime if we could predict where that crime is most likely to happen within the various neighborhoods in Boston.
+Boston is the largest city in New England. Being a major metropolitan area means that crimes occur around the city every day. Our project takes a look into the "Crimes in Boston" dataset. This is a dataset of police reports from the last From the information in these data, we used machine learning techniques to see if given a specific crime if we could predict where that crime is most likely to happen within the various neighborhoods in Boston. 
 
 %\end{abstract}
 
@@ -266,45 +267,46 @@ Boston is the largest city in New England. Being a major metropolitan area means
 %	OBJECTIVES
 %----------------------------------------------------------------------------------------
 \color{black}\section{Introduction}
+\begin{itemize}
 \item Purpose: Try to predict where various crimes are likely to happen within the city of Boston
 \item Use Multi-class logistic regression to predict where a specific crime is likely to happen
+\item Create a map of Boston which visualises our results 
+\end{itemize}
 \columnsep=5pt
 \columnseprule=0pt
 %\color{blue}
-\begin{figure}
-\caption{A graph showing the police districts along with the amount of crime divided by UCR part number.}
-\includegraphics[width = 0.2\textwidth]{graph4paper1.png}
-\end{figure}
 
+
+
+\begin{center}
+\centering
+\includegraphics[scale = 2]{graph4paper1.png}
+
+    A graph showing the police districts along with the amount of crime organized by UCR part number.
+\end{center}
+\section{Setup to our model}
+\begin{itemize}
+    \item Each location of city is organized by BPD districts
+    \item 12 districts in total 
+    \item Individual crimes are given an offense code number. These are then put into offense groups
+    \item We predicted crimes based off of their offence group, not the individual offense code number
+    \item 67 offense groups in total
+\end{itemize}
 
 %------------------------------------------------
-\section{Setup to our model}
+\section{Multi-class logistic regression}
+We created a multi-class logistic regression algorithm to try to compute where a crime was most likely to happen. This model had an accuracy of 0.53. Thus it correctly predicted what district a crime was most likely to happen around half the time. 
+ \begin{center}
+    \includegraphics{ConfustionMatrix.png}
+  
+       A Confusion Matrix representing our mutli-class logistic model
+   \end{center}
 
 
   
 %------------------------------------------------
 
-\section{Weak Anticipation}
-
-
-
-\vspace{0.3cm}
-
-\begin{tcolorbox}[colback=blue!15!white, colframe = blue!70!white]
-
-\end{tcolorbox}
-
-%\footnotetext{In our finite discrete sample space, by equivalent we simply mean that $\Q$ is equivalent if $\forall i \in \{1,2,..,M\}, \Q(\omega_i)>0.$}
-\vspace{0.25cm}
-
-\begin{tcolorbox}
-
-\end{tcolorbox}
-
-\section{Value of Weak Information in a Complete Market}
-
-
-\subsection{Application of Weak Information to Utility Functions}
+\subsection{Visualizations}
 
 
 
@@ -312,8 +314,10 @@ Boston is the largest city in New England. Being a major metropolitan area means
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\section*{Citations}
 
-
+Jain, A. (2018, February). Crimes in Boston, Version 3. Retrieved November, 2019 from https://www.kaggle.com/ankkur13/boston-crime-data.\\
+Boston Police. “The Boston Police Department's Virtual Community.” Bpdnews.com, 7 Dec. 2019, https://bpdnews.com/.
 
 
 
