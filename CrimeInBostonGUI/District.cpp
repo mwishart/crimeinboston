@@ -130,9 +130,12 @@ void District::drawDistrictBorder()
 DistrictEnum District::idToEnum(const QString &name)
 {
     DistrictEnum d = District_Invalid;
-    if (name == "A7") d = District_A7;
+    if (name == "A1") d = District_A1;
+    else if (name == "A7") d = District_A7;
+    else if (name == "A15") d = District_A15;
     else if (name == "B2") d = District_B2;
     else if (name == "B3") d = District_B3;
+    else if (name == "C6") d = District_C6;
     else if (name == "C11") d = District_C11;
     else if (name == "D4") d = District_D4;
     else if (name == "D14") d = District_D14;
@@ -146,9 +149,12 @@ QString District::enumToId(DistrictEnum d_id)
     QString id;
     switch(d_id)
     {
+    case District_A1: id = "A1"; break;
     case District_A7: id = "A7"; break;
+    case District_A15: id = "A15"; break;
     case District_B2: id = "B2"; break;
     case District_B3: id = "B3"; break;
+    case District_C6: id = "C6"; break;
     case District_C11: id = "C11"; break;
     case District_D4: id = "D4"; break;
     case District_D14: id = "D14"; break;

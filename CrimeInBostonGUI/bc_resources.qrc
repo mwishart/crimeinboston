@@ -10,5 +10,8 @@
         <file>districts/D4.txt</file>
         <file>districts/D14.txt</file>
         <file>districts/A7.txt</file>
+        <file>districts/A1.txt</file>
+        <file>districts/A15.txt</file>
+        <file>districts/C6.txt</file>
     </qresource>
 </RCC>
