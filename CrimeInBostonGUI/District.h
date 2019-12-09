@@ -9,6 +9,7 @@ class CrimeCollection;
 enum DistrictEnum
 {
     District_Invalid = -1,
+    District_A7,
     District_B2,
     District_B3,
     District_C11,
