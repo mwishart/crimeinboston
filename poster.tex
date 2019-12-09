@@ -58,7 +58,7 @@
   \pgfpageslogicalpageoptions{1}
   {
     \color{Gold},  
-    border code=\pgfsetlinewidth{8pt}\color{Gold}\pgfstroke,%
+    border code=\pgfsetlinewidth{8pt}\color{magenta}\pgfstroke,%
     border shrink=\pgfpageoptionborder,%
     resized width=.95\pgfphysicalwidth,%
     resized height=.95\pgfphysicalheight,%
@@ -213,9 +213,9 @@ u}}
 
 \begin{minipage}[b]{1.5\linewidth}
 \begin{vwcol}[widths={0.35,0.65},sep=.8cm, justify=flush,rule=0pt,indent=1em]
-\Huge \color{Blue} \textbf{Predicting Crime in Boston} \color{Black}\\ % Title
+\Huge \color{NavyBlue} \textbf{Predicting Crime in Boston} \color{Black}\\ % Title
 %\Huge\textit{An Exploration of Complexity}\\[1cm] % Subtitle
-\huge \color{Black}\textbf{Julie Osborne, Chris McCooey, Mary Wishart}    
+\huge \color{Black}\textbf{Chris McCooey, Julie Osborne, Mary Wishart}    
 \vfill\null
 %\columnbreak
 
@@ -250,7 +250,7 @@ u}}
 
 %\color{Navy} % Navy color for the abstract
 \section*{Abstract}
-Boston is the largest city in New England. Being a major metropolitan area means that crimes occur around the city every day. Our project takes a look into the "Crimes in Boston" dataset. This is a dataset of police reports from the last From the information in these data, we used machine learning techniques to see if given a specific crime if we could predict where that crime is most likely to happen within the various neighborhoods in Boston. 
+Boston is the largest city in New England. Being a major metropolitan area means that crimes occur around the city every day. Our project takes a look into the "Crimes in Boston" dataset. This is a dataset of police reports from the last From the information in these data, we used machine learning techniques to see if given a specific crime and the day which that crime occurred if we could predict where that crime is most likely to happen within the various neighborhoods in Boston. 
 
 %\end{abstract}
 
@@ -269,7 +269,8 @@ Boston is the largest city in New England. Being a major metropolitan area means
 \color{black}\section{Introduction}
 \begin{itemize}
 \item Purpose: Try to predict where various crimes are likely to happen within the city of Boston
-\item Use Multi-class logistic regression to predict where a specific crime is likely to happen
+\item Use Multi-class logistic regression to predict where a specific crime was likely to happen
+\item Use Decision Tree algorithm to predict where a crime was likely to happen
 \item Create a map of Boston which visualises our results 
 \end{itemize}
 \columnsep=5pt
@@ -291,13 +292,25 @@ Boston is the largest city in New England. Being a major metropolitan area means
     \item Individual crimes are given an offense code number. These are then put into offense groups
     \item We predicted crimes based off of their offence group, not the individual offense code number
     \item 67 offense groups in total
+    \item Combined the month and year columns to be one column
+    \item One Hot encode all of our variables as they were categorical 
+    \item Data was spilt into 80/20 training, testing datasets
 \end{itemize}
 
 %------------------------------------------------
+\section{Decision Tree}
+First we created a decision tree as a baseline for our data. To create this tree we used the DecisionTreeClassifier from sklearn. In order to get the maximum depth we ran the algorithm, testing depths from 1 to 119. A depth of 26 gave the highest accuracy. The accuracy for this model was low at only 0.18. This model misclassified a lot of the districts, for example it did not classify any of the A15 crimes correctly and classified a high amount of crimes as B2 when they should not have been.
+
+\begin{center}
+    \includegraphics[scale = 2]{decision_tree_cm.png}
+    
+    A confusion matrix representing our decision tree model
+\end{center}
+
 \section{Multi-class logistic regression}
-We created a multi-class logistic regression algorithm to try to compute where a crime was most likely to happen. This model had an accuracy of 0.53. Thus it correctly predicted what district a crime was most likely to happen around half the time. 
+Next we created a multi-class logistic regression algorithm to try to compute where a crime was most likely to happen. To calculate the model, we used sklearn's built in LogisticRegression method.  This model had very low accuracy of about 20\% 
  \begin{center}
-    \includegraphics{ConfustionMatrix.png}
+    \includegraphics[scale = 2]{lr_cm.png}
   
        A Confusion Matrix representing our mutli-class logistic model
    \end{center}
@@ -306,12 +319,16 @@ We created a multi-class logistic regression algorithm to try to compute where a
   
 %------------------------------------------------
 
-\subsection{Visualizations}
+\section{Visualizations}
 
 
 
-
-
+\section{Future Work}
+\begin{itemize}
+    \item Increase prediction accuracy of our models
+    \item Bring other data into consideration for classification such as time crime occurred
+    \item Analyze other datasets for information on why certain districts have more crimes or are more likely to have specific crimes than other districts 
+\end{itemize}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section*{Citations}
