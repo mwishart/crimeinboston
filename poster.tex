@@ -297,13 +297,17 @@ Boston is the largest city in New England. Being a major metropolitan area means
     \item Data was spilt into 80/20 training, testing datasets
 \end{itemize}
 
+\begin{center}
+    \includegraphics{crimemap1.png}
+    
+    This map is a visual representation of our dataset. It shows the city of Boston, divided into each police district. Each dot is a row in the dataset. For example, the dot circled represents a police report where the officer was called for medical assistance within district B2 on a Friday in August, 2018 at 10pm. 
+\end{center}
 %------------------------------------------------
 \section{Decision Tree}
-First we created a decision tree as a baseline for our data. To create this tree we used the DecisionTreeClassifier from sklearn. In order to get the maximum depth we ran the algorithm, testing depths from 1 to 119. A depth of 26 gave the highest accuracy. The accuracy for this model was low at only 0.18. This model misclassified a lot of the districts, for example it did not classify any of the A15 crimes correctly and classified a high amount of crimes as B2 when they should not have been.
+To set up a baseline for our data predictions, we first created a decision tree. To create this tree we used the DecisionTreeClassifier from sklearn. In order to get the maximum depth we ran the algorithm, testing depths from 1 to 119. A depth of 26 gave the highest accuracy. The accuracy for this model was low at only 0.18. This model misclassified a lot of the districts, for example it did not classify any of the A15 crimes correctly and classified a high amount of crimes as B2 when they should not have been.
 
 \begin{center}
-    \includegraphics[scale = 2]{decision_tree_cm.png}
-    
+    \includegraphics[scale = 2]{decision_tree_cm.png} \\
     A confusion matrix representing our decision tree model
 \end{center}
 
@@ -319,15 +323,12 @@ Next we created a multi-class logistic regression algorithm to try to compute wh
   
 %------------------------------------------------
 
-\section{Visualizations}
-
-
-
 \section{Future Work}
 \begin{itemize}
     \item Increase prediction accuracy of our models
     \item Bring other data into consideration for classification such as time crime occurred
     \item Analyze other datasets for information on why certain districts have more crimes or are more likely to have specific crimes than other districts 
+    \item Create a visualization of our data using the map of Boston. Each dot on the map would be a prediction where the color of the dot would represent whether or not the prediction was correct.
 \end{itemize}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
